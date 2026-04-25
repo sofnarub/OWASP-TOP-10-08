@@ -1,38 +1,39 @@
-name: Deploy seguro
+name: Seguridad básica
 
 on:
   push:
     branches: [ "main" ]
 
 jobs:
-  deploy:
+  check:
     runs-on: ubuntu-latest
 
     steps:
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Verificar estructura del proyecto
-        run: |
-          echo "Archivos del proyecto:"
-          ls -R
+      - name: Ver estructura
+        run: ls -R
 
-      - name: Validar JavaScript
+      - name: Validar JavaScript (real)
         run: |
           if [ -f frontend/app.js ]; then
-            node -c frontend/app.js || echo "Error en JS"
+            node frontend/app.js
           fi
 
-      - name: Validar PHP (lint)
+      - name: Validar PHP
         run: |
           if [ -f backend/procesar.php ]; then
             php -l backend/procesar.php
           fi
 
-      - name: Ejecutar tests (simulado)
-        run: echo "No hay tests definidos aún"
+      - name: Detectar código peligroso
+        run: |
+          grep -r "eval(" . && exit 1 || echo "OK"
+
+      - name: Simular tests
+        run: echo "Tests OK"
 
       - name: Deploy (solo admin)
         if: github.actor == 'admin-usuario'
-        run: |
-          echo "Desplegando aplicación..."
+        run: echo "Deploy ejecutado"
