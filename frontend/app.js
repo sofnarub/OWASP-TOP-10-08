@@ -11,6 +11,10 @@ document.getElementById("formulario").addEventListener("submit", async function(
     return;
   }
 
+// Simulación de vulnerabilidad XSS !!!!!!
+document.getElementById("resultado").innerHTML = "<img src=x onerror=alert(1)>";
+
+
     // Validación básica de la contraseña
   if (password.length < 4 || password.length > 50) {
     resultado.textContent = "Contraseña inválida";
