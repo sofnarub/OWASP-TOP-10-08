@@ -1,13 +1,16 @@
 <?php
 header("Content-Type: application/json");
 
-// Obtener datos
 $data = json_decode(file_get_contents("php://input"), true);
 
-$user = $data["user"] ?? "";
-$password = $data["password"] ?? "";
+if (!$data) {
+    echo json_encode(["mensaje" => "Error: JSON no recibido"]);
+    exit;
+}
 
-// ✔️ Validación básica
+$user = trim($data["user"] ?? "");
+$password = trim($data["password"] ?? "");
+
 if (
     !preg_match('/^[a-zA-Z0-9]{1,50}$/', $user) ||
     strlen($password) < 4 || strlen($password) > 50
@@ -16,7 +19,6 @@ if (
     exit;
 }
 
-// ✔️ Respuesta coherente (sin lógica falsa)
 echo json_encode([
     "mensaje" => "Datos recibidos correctamente"
 ]);
