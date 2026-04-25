@@ -1,6 +1,6 @@
 document.getElementById("formulario").addEventListener("submit", async function(e) {
   e.preventDefault();
-x = ;
+
   const user = document.getElementById("user").value;
   const password = document.getElementById("password").value;
   const resultado = document.getElementById("resultado");
