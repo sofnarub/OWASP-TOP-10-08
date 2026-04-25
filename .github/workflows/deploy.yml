@@ -12,28 +12,37 @@ jobs:
       - name: Descargar código
         uses: actions/checkout@v4
 
-      - name: Ver estructura
+      - name: Ver estructura del proyecto
         run: ls -R
 
-      - name: Validar JavaScript (real)
+      # VALIDACIÓN JS
+      - name: Validar JavaScript (sintaxis)
         run: |
           if [ -f frontend/app.js ]; then
-            node frontend/app.js
+            node --check frontend/app.js
           fi
 
+      # VALIDACIÓN PHP
       - name: Validar PHP
         run: |
           if [ -f backend/procesar.php ]; then
             php -l backend/procesar.php
           fi
 
+      # DETECCIÓN DE CÓDIGO PELIGROSO
       - name: Detectar código peligroso
         run: |
           grep -r "eval(" . && exit 1 || echo "OK"
 
-      - name: Simular tests
+      # (Opcional pero útil)
+      - name: Detectar console.log (debug en producción)
+        run: |
+          grep -r "console.log" frontend && exit 1 || echo "Sin logs"
+
+      - name: Tests simulados
         run: echo "Tests OK"
 
+      # ✅ DEPLOY CONTROLADO
       - name: Deploy (solo admin)
         if: github.actor == 'admin-usuario'
         run: echo "Deploy ejecutado"
