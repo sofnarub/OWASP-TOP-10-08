@@ -11,6 +11,12 @@ document.getElementById("formulario").addEventListener("submit", async function(
     return;
   }
 
+    // Validación básica de la contraseña
+  if (password.length < 4 || password.length > 50) {
+    resultado.textContent = "Contraseña inválida";
+    return;
+  }
+
   try {
     const response = await fetch("/backend/procesar.php", {
       method: "POST",
