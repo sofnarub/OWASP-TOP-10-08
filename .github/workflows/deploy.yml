@@ -15,34 +15,44 @@ jobs:
       - name: Ver estructura del proyecto
         run: ls -R
 
-      # VALIDACIÓN JS
+      # Validación JS sin ejecutar DOM
       - name: Validar JavaScript (sintaxis)
         run: |
           if [ -f frontend/app.js ]; then
             node --check frontend/app.js
           fi
 
-      # VALIDACIÓN PHP
+      # Validación PHP
       - name: Validar PHP
         run: |
           if [ -f backend/procesar.php ]; then
             php -l backend/procesar.php
           fi
 
-      # DETECCIÓN DE CÓDIGO PELIGROSO
-      - name: Detectar código peligroso
+      # Detectar código peligroso (sin falsos positivos)
+      - name: Detectar uso de eval
         run: |
-          grep -r "eval(" . && exit 1 || echo "OK"
+          if grep -R "eval(" . --exclude-dir=.github --exclude-dir=node_modules; then
+            echo "Uso de eval detectado"
+            exit 1
+          else
+            echo "Sin eval"
+          fi
 
-      # (Opcional pero útil)
-      - name: Detectar console.log (debug en producción)
+      # Evitar logs en producción
+      - name: Detectar console.log
         run: |
-          grep -r "console.log" frontend && exit 1 || echo "Sin logs"
+          if grep -R "console.log" frontend; then
+            echo "console.log detectado"
+            exit 1
+          else
+            echo "Sin logs"
+          fi
 
       - name: Tests simulados
         run: echo "Tests OK"
 
-      # ✅ DEPLOY CONTROLADO
+      # Deploy controlado
       - name: Deploy (solo admin)
         if: github.actor == 'admin-usuario'
         run: echo "Deploy ejecutado"
